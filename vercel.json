@@ -2,10 +2,6 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "installCommand": "npm install && cd backend && npm install && cd ../frontend && npm install",
   "outputDirectory": "frontend/dist",
-  "env": {
-    "VITE_API_BASE": "@api-base-url",
-    "VITE_APP_NAME": "CodeLink"
-  },
   "routes": [
     {
       "src": "^/api/(.*)",
