@@ -19,14 +19,16 @@ app.use(express.json());
 // Remove a barra final da URL se existir para evitar links gerados com //
 const BASE_URL = (process.env.BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
 const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) console.error('⚠️ ALERTA: MONGO_URI não está definida!');
 const PORT = process.env.PORT || 5000;
 
 // Conexão MongoDB
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 })
 .then(() => console.log('✅ MongoDB conectado com sucesso'))
 .catch(err => {
-  console.error('❌ Erro ao conectar MongoDB:', err.message);
-  process.exit(1);
+  console.error('❌ Erro crítico ao conectar MongoDB:', err.message);
+  // Não mata o processo imediatamente para permitir que o Health Check responda erro
+  // process.exit(1); 
 });
 
 // Middleware para validar URL
@@ -210,13 +212,21 @@ app.get('/api/urls', async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Servidor CodeLink ativo' });
+  const states = { 0: 'Desconectado', 1: 'Conectado', 2: 'Conectando', 3: 'Desconectando' };
+  const dbStatus = states[mongoose.connection.readyState] || 'Desconhecido';
+  
+  res.json({ 
+    status: 'OK', 
+    database: dbStatus,
+    uptime: process.uptime(),
+    message: 'Servidor CodeLink ativo' 
+  });
 });
 
 // Iniciar servidor
 const server = app.listen(PORT, () => {
-  console.log(`\n🚀 CodeLink Backend rodando na porta ${PORT}`);
-  console.log(`📝 Acesse: http://localhost:3000 (frontend)\n`);
+  console.log(`\n🚀 CodeLink Backend rodando na porta ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  console.log(`🌍 URL Base configurada: ${BASE_URL}\n`);
 });
 
 // Fechamento limpo do servidor (Graceful Shutdown)

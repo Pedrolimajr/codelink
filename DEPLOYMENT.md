@@ -107,9 +107,12 @@ railway up
 - Vá em "Build new app" -> "Containers"
 - **Name:** `codelink-backend`
 - **Build and Deploy:** `Yes`
-- **Root Directory:** `backend` (procure em Advanced Options)
+- **Root Directory:** `backend`
+- **Dockerfile Path:** `Dockerfile` (Nota: Se usar Root Directory 'backend', não repita a pasta aqui)
 - **Health:** `/api/health`
-- **Requisito:** É necessário o arquivo `Dockerfile` dentro da pasta `backend/`.
+- **Importante:** Se o erro "Dockerfile not found" persistir, verifique se o arquivo foi enviado ao GitHub sem a extensão .txt.
+- **Dica:** É normal ver erros de "port 5000 not listening" nos primeiros segundos do log enquanto o servidor inicia.
+- **Solução "URL Expirada":** Caso receba a mensagem de URL expirada, vá em **Deployment** -> **Redeploy** no painel do Back4App para reativar o link gratuito.
 - **Environment Variables:** Adicionar `MONGO_URI`, `JWT_PRIVATE_KEY`, `NODE_ENV=production`, `PORT=5000`.
 - **Nota:** A `BASE_URL` deve ser atualizada após o deploy com a URL `.back4app.io` gerada.
 - Excelente estabilidade para APIs Node.js.
