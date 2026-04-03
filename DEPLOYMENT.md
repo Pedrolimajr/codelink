@@ -96,7 +96,29 @@ railway up
 - Build command: `npm install`
 - Start command: `npm start`
 
-**Opção 3: Heroku**
+**Opção 3: Koyeb (Recomendado)**
+- Conectar repositório GitHub
+- Definir "Work Directory" como `backend`
+- Configurar variáveis de ambiente (`MONGO_URI`, `JWT_PRIVATE_KEY`, etc.)
+- O plano "Nano" é gratuito e evita o "cold start" (sono) do app.
+- Build command: `npm install`
+
+**Opção 4: Back4App Containers (Recomendado - Gratuito e Sem Cartão)**
+- Vá em "Build new app" -> "Containers"
+- **Name:** `codelink-backend`
+- **Build and Deploy:** `Yes`
+- **Root Directory:** `backend` (procure em Advanced Options)
+- **Health:** `/api/health`
+- **Requisito:** É necessário o arquivo `Dockerfile` dentro da pasta `backend/`.
+- **Environment Variables:** Adicionar `MONGO_URI`, `JWT_PRIVATE_KEY`, `NODE_ENV=production`, `PORT=5000`.
+- **Nota:** A `BASE_URL` deve ser atualizada após o deploy com a URL `.back4app.io` gerada.
+- Excelente estabilidade para APIs Node.js.
+
+**Opção 5: Adaptable.io (Focado em Node.js)**
+- Conecte o repositório
+- Selecione o template "Node.js App"
+- Ele detecta automaticamente o MongoDB e as configurações do Express.
+**Opção 4: Heroku**
 ```bash
 heroku create codelink-api
 git push heroku main

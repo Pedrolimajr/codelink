@@ -21,10 +21,7 @@ const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
 
 // Conexão MongoDB
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(MONGO_URI)
 .then(() => console.log('✅ MongoDB conectado com sucesso'))
 .catch(err => {
   console.error('❌ Erro ao conectar MongoDB:', err.message);
@@ -215,7 +212,18 @@ app.get('/api/health', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`\n🚀 CodeLink Backend rodando em http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`\n🚀 CodeLink Backend rodando na porta ${PORT}`);
   console.log(`📝 Acesse: http://localhost:3000 (frontend)\n`);
+});
+
+// Fechamento limpo do servidor (Graceful Shutdown)
+process.on('SIGTERM', () => {
+  console.log('SIGTERM recebido. Fechando servidor HTTP...');
+  server.close(() => {
+    mongoose.connection.close(false, () => {
+      console.log('Conexão MongoDB encerrada.');
+      process.exit(0);
+    });
+  });
 });
