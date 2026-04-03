@@ -16,7 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 // Variáveis
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+// Remove a barra final da URL se existir para evitar links gerados com //
+const BASE_URL = (process.env.BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
 
@@ -31,8 +32,9 @@ mongoose.connect(MONGO_URI)
 // Middleware para validar URL
 const isValidUrl = (string) => {
   try {
-    new URL(string);
-    return true;
+    const url = new URL(string);
+    // Aceita apenas protocolos web seguros
+    return url.protocol === 'http:' || url.protocol === 'https:';
   } catch (_) {
     return false;
   }
